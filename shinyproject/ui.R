@@ -3,6 +3,7 @@ library(shinythemes)
 library(plotly)
 
 attributes <- c("popularity",  "instrumentalness", "acousticness", "danceability", "energy", "liveness", "speechiness", "valence")
+playlist <- read.csv("./playlist.csv", stringsAsFactors = FALSE)
 
 my_ui <- navbarPage(
   theme = shinytheme("flatly"),
@@ -43,7 +44,7 @@ my_ui <- navbarPage(
                  tableOutput("song_recommendation_table")
         ),
         tabPanel("Delete Songs From Playlist",
-                 checkboxGroupInput("playlist_songs_checkbox", "Playlist Songs"),
+                 checkboxGroupInput("playlist_songs_checkbox", "Playlist Songs", select(playlist, Songs)),
                  actionButton("updateButton", "Remove Songs"), 
                  textOutput("placeholder")
         )

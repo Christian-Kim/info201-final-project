@@ -111,7 +111,11 @@ my_server <- function(input, output) {
   
   output$placeholder <- renderText({
     input$updateButton
-#    playlist <- filter(playlist, Songs !%in% pla)
+    remove_songs <- input$playlist_songs_checkbox 
+    playlist <- read.csv("./playlist.csv", stringsAsFactors = FALSE)
+    for(remove in remove_songs) {
+      playlist <- filter(playlist, Songs != remove)
+    }
     return("")
   })
 }

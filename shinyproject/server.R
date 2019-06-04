@@ -5,7 +5,7 @@ library(plotly)
 
 files <- dir("./data")
 data <- do.call(rbind,lapply(paste0("./data/", files), read.csv, stringsAsFactors = FALSE))
-data <- mutate(data, popularity = popularity / 100.0)
+data <- mutate(data, popularity = popularity / 100.0, genre = data[,1])
 
 genre_list <- as.vector(distinct(data, genre)[,1])
 

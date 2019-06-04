@@ -14,13 +14,16 @@ radar_chart <- function(group_names, df, columns) {
   for (i in seq(length(group_names))) {
     p <- add_trace(p, r = as.numeric(df[i,]), theta = columns, name = group_names[i])
   }
-  p <- layout(p, polar = list(radialaxis = list(visible = T, range = c(0,100))))
+  p <- layout(p, polar = list(radialaxis = list(visible = T, range = c(0, 100))))
   return (p)
 }
 
 get_genre_stats <- function(genres, input_df, columns) {
   df <- data.frame(matrix(ncol = length(columns), nrow = length(genres)))
   colnames(df) <- columns
+  if (length(genres) == 0) {
+    return (radar_chart(c(), df, columns))
+  }
   for (i in seq(length(genres))) {
     for (j in seq(length(columns))) {
       col_sym <- rlang::sym(columns[j])

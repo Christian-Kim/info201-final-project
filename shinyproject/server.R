@@ -38,7 +38,8 @@ get_genre_stats <- function(genres, input_df, columns) {
   return (radar_chart(genres, df, columns))
 }
 
-playlist <- c()
+playlist <- data.frame(Songs = c(""))
+write.csv(playlist, "./playlist.csv", row.names = FALSE)
 
 my_server <- function(input, output) {
   output$genre_list <- renderUI({
@@ -63,11 +64,10 @@ my_server <- function(input, output) {
   })
   
   output$playlist <- renderDataTable({
-    print(input$playlist_select)
-    playlist <- c(playlist, input$playlist_select)
-    df <- data.frame(playlist)
-    colnames(df) <- c("Songs")
-    return (df)
+    playlist <- read.csv("./playlist.csv", stringsAsFactors = FALSE)
+    playlist <- add_row(playlist, Songs = c(input$playlist_select))
+    write.csv(playlist, "./playlist.csv", row.names = FALSE)
+    return (playlist)
   })
   
   output$song_selection <- renderUI({
@@ -86,7 +86,8 @@ my_server <- function(input, output) {
   })
   
   output$radarchart_playlist <- renderPlotly({
-    playlist_df <- filter(music_data, songBy %in% input$playlist_select)
+    playlist <- read.csv("./playlist.csv", stringsAsFactors = FALSE)
+    playlist_df <- filter(music_data, songBy %in% playlist$Songs)
     columns <- input$attributes_playlist
 
     summarized_df <- data.frame(matrix(ncol = length(columns), nrow = 1))

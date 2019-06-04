@@ -8,6 +8,8 @@ music_data <- do.call(rbind,lapply(paste0("./data/", files), read.csv, stringsAs
 music_data <- mutate(music_data, popularity = popularity / 100.0,
                genre = music_data[,1],
                songBy = paste(track_name, "by", artist_name))
+distinct_songs <- distinct(music_data, track_name, .keep_all = TRUE)
+View(distinct_songs)
 
 genre_list <- as.vector(distinct(music_data, genre)[,1])
 

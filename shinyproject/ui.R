@@ -42,11 +42,6 @@ my_ui <- navbarPage(
                  tableOutput("playlist")), 
         tabPanel("Song Recommendation", 
                  tableOutput("song_recommendation_table")
-        ),
-        tabPanel("Delete Songs From Playlist",
-                 checkboxGroupInput("playlist_songs_checkbox", "Playlist Songs", select(playlist, Songs)),
-                 actionButton("updateButton", "Remove Songs"), 
-                 textOutput("placeholder")
         )
       )
     )

@@ -118,6 +118,17 @@ my_server <- function(input, output) {
     }
     return("")
   })
+  
+  read_playlist <- reactive({
+    playlist <- read.csv("./playlist.csv", stringsAsFactors = FALSE)
+    return(as.vector(select(playlist, Songs)))
+  })
+  
+  output$delete_songs <- renderUI({
+    playlist_songs <- read_playlist()
+    checkboxGroupInput("playlist_songs_checkbox", "Playlist Songs", playlist_songs)
+    actionButton("updateButton", "Remove Songs")
+  })
 }
 
 shinyServer(my_server)

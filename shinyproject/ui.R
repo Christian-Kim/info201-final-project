@@ -18,12 +18,25 @@ my_ui <- navbarPage(
       )
     ),
     mainPanel(
-      plotlyOutput("radarchart")
+      plotlyOutput("radarchart_genres")
     )
   ), 
-  tabPanel("Playlist Generator"
-    #sidebarPanel(),
-    ##mainPanel()
+  tabPanel(
+    "Playlist Generator",
+    sidebarPanel(
+      checkboxGroupInput(
+        "attributes_playlist",
+        "Select Attributes",
+        attributes,
+        selected = c("popularity", "energy", "valence")
+      )
+    ),
+    mainPanel(
+      plotlyOutput("radarchart_playlist"),
+      uiOutput("genre_selection"),
+      uiOutput("song_selection"),
+      dataTableOutput("playlist")
+    )
   ),
   tabPanel("What makes a song popular?",
            sidebarLayout(

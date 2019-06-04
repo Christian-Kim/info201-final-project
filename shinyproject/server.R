@@ -11,7 +11,7 @@ music_data <- mutate(music_data, popularity = popularity / 100.0,
 
 genre_list <- as.vector(distinct(music_data, genre)[,1])
 
-radar_chart <- function(group_names, df, columns) {
+radar_chart <- function(group_names, df, columns, W, H, M) {
   p <- plot_ly(type = 'scatterpolar', mode = 'marker', fill = 'toself')
   for (i in seq(length(group_names))) {
     p <- add_trace(p, r = as.numeric(df[i,]), theta = columns, name = group_names[i])
@@ -24,7 +24,12 @@ radar_chart <- function(group_names, df, columns) {
         range = c(0, 100)
       )
     ),
-    autosize = T
+    autosize = T,
+    paper_bgcolor = 'transparent',
+    autosize = F,
+    width = W,
+    height = H,
+    margin = M
   )
   return (p)
 }
@@ -46,7 +51,7 @@ get_genre_stats <- function(genres, input_df, columns) {
   return (radar_chart(genres, df, columns))
 }
 
-playlist <- data.frame(Songs = c(""))
+playlist <- music_data %>% head(1) %>% filter(artist_name == "")
 write.csv(playlist, "./playlist.csv", row.names = FALSE)
 
 my_server <- function(input, output) {
@@ -75,7 +80,8 @@ my_server <- function(input, output) {
         df[i, j] <- summarized_col[1,1] * 100
       }
     }
-    return (radar_chart(genres, df, columns))
+    radar_margins = list(l = 150)
+    return (radar_chart(genres, df, columns, W = 1000, H = 600, M = radar_margins))
   })
   
   output$genre_selection <- renderUI({
@@ -90,19 +96,25 @@ my_server <- function(input, output) {
   observeEvent(
     input$update_playlist,
     {output$playlist <- renderTable({
+      print("add")
       playlist <- read.csv("./playlist.csv", stringsAsFactors = FALSE)
-      playlist <- add_row(playlist, Songs = c(isolate(input$playlist_select)))
+      selected_song <- isolate(input$playlist_select)
+      playlist_additions <- filter(music_data, songBy == selected_song)
+      playlist <- rbind(playlist, playlist_additions)
       write.csv(playlist, "./playlist.csv", row.names = FALSE)
-      return (playlist)
+      songByOnly <- distinct(playlist, songBy) %>% select("Your Playlist" = songBy)
+      return (songByOnly)
     })
   })
   
   observeEvent(
     input$clear_playlist,
     {output$playlist <- renderTable({
-      playlist <- data.frame(Songs = c(""))
+      print("remove")
+      playlist <- music_data %>% head(1) %>% filter(artist_name == "")
       write.csv(playlist, "./playlist.csv", row.names = FALSE)
-      return (playlist)
+      songByOnly <- select(playlist, "Your Playlist" = songBy)
+      return (songByOnly)
     })
   })
   
@@ -122,11 +134,9 @@ my_server <- function(input, output) {
   })
   
   observeEvent(
-    c(input$update_playlist),
+    c(input$update_playlist, input$clear_playlist),
     {output$radarchart_playlist <- renderPlotly({
-      playlist <- read.csv("./playlist.csv", stringsAsFactors = FALSE)
-      playlist_df <- filter(music_data, songBy %in% select(playlist, Songs))
-      View(playlist_df)
+      playlist_df <- read.csv("./playlist.csv", stringsAsFactors = FALSE)
       columns <- input$attributes_playlist
       summarized_df <- data.frame(matrix(ncol = length(columns), nrow = 1))
       colnames(summarized_df) <- columns
@@ -135,7 +145,9 @@ my_server <- function(input, output) {
         summarized_col <- summarize(playlist_df, mean(!!col_sym))
         summarized_df[1, j] <- summarized_col[1,1] * 100
       }
-      return (radar_chart(c("Your Playlist's Features:"), summarized_df, columns))
+      
+      radar_margin = list(l = 50, r = 50, b = 100, t = 0, margin = 2)
+      return (radar_chart(c("Your Playlist's Features:"), summarized_df, columns, W = 500, H = 500, M = radar_margin))
     })
   })
   
@@ -150,7 +162,9 @@ my_server <- function(input, output) {
       summarized_col <- summarize(playlist_df, mean(!!col_sym))
       summarized_df[1, j] <- summarized_col[1,1] * 100
     }
-    return (radar_chart(c("Selected Song's Features:"), summarized_df, columns))
+    
+    radar_margin = list(l = 50, r = 50, b = 50, t = 0, margin = 3)
+    return (radar_chart(c("Selected Song's Features:"), summarized_df, columns, W = 600, H = 600, M = radar_margin))
   })
   
   output$radarchart <- renderPlotly({
@@ -163,7 +177,11 @@ my_server <- function(input, output) {
   
   output$outputPlot <- renderPlot({
     test1 <- filter(music_data, genre == toString(input$list_of_genres_plot))
-    plot <- ggplot(test1, aes(x = get(input$x), y = popularity)) + geom_smooth() + labs(x = input$x, y = "popularity", title = paste(input$x, "vs popularity for", input$list_of_genres_plot, "Music")) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+    plot <- ggplot(test1, aes(x = get(input$x), y = popularity)) +
+              #geom_point() +
+              geom_smooth() +
+              labs(x = input$x, y = "popularity", title = paste(input$x, "vs popularity for", input$list_of_genres_plot, "Music")) +
+              theme(axis.text.x = element_text(angle = 90, hjust = 1))
     return(plot)
   })
   

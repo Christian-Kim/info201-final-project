@@ -25,23 +25,25 @@ my_ui <- navbarPage(
   tabPanel(
     "Playlist Stuff",
     sidebarPanel(
-      checkboxGroupInput(
-        "attributes_playlist",
-        "Select Attributes",
-        attributes,
-        selected = c("popularity", "energy", "valence")
-      ),
-      selectInput("playlists", "Playlists", c())
+      tableOutput("playlist")
     ), 
     mainPanel(
       tabsetPanel(type = "tabs",
-        tabPanel("Playlist Creation", 
-                 plotlyOutput("radarchart_playlist"), 
-                 uiOutput("genre_selection"),
-                 uiOutput("song_selection"),
-                 tableOutput("playlist")), 
-        tabPanel("Song Recommendation", 
-                 tableOutput("song_recommendation_table")
+        tabPanel(
+          "Playlist Creation",
+          plotlyOutput("radarchart_playlist"),
+          checkboxGroupInput(
+            "attributes_playlist",
+            "Select Attributes",
+            attributes,
+            selected = c("popularity", "energy", "valence")
+          ),
+          uiOutput("genre_selection"),
+          uiOutput("song_selection")
+        ), 
+        tabPanel(
+          "Song Recommendation", 
+          tableOutput("song_recommendation_table")
         )
       )
     )

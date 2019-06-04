@@ -59,7 +59,8 @@ my_server <- function(input, output) {
     selectizeInput(
       "genre_selection",
       "Select a genre to add songs from",
-      choices = genre_list
+      choices = genre_list,
+      selected = "Pop"
     )
   })
   

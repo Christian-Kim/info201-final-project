@@ -29,19 +29,25 @@ my_ui <- navbarPage(
         "Select Attributes",
         attributes,
         selected = c("popularity", "energy", "valence")
-      )
+      ),
+      selectInput("playlists", "Playlists", c())
     ), 
     mainPanel(
       tabsetPanel(type = "tabs",
-        tabPanel("1", 
+        tabPanel("Playlist Creation", 
                  plotlyOutput("radarchart_playlist"), 
                  uiOutput("genre_selection"),
                  uiOutput("song_selection"),
                  dataTableOutput("playlist")), 
-        tabPanel("2")
+        tabPanel("Song Recommendation", 
+                 tableOutput("song_recommendation_table")
+        ),
+        tabPanel("Delete Songs From Playlist",
+                 checkboxGroupInput("playlist_songs_checkbox", "Playlist Songs"),
+                 actionButton("updateButton", "Remove Songs"), 
+                 textOutput("placeholder")
+        )
       )
-      
-      
     )
   )
 )

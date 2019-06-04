@@ -4,12 +4,13 @@ library(shiny)
 library(plotly)
 
 files <- dir("./data")
-data <- do.call(rbind,lapply(paste0("./data/", files), read.csv, stringsAsFactors = FALSE))
-data <- mutate(data, popularity = popularity / 100.0,
+music_data <- do.call(rbind,lapply(paste0("./data/", files), read.csv, stringsAsFactors = FALSE))
+music_data <- mutate(music_data, popularity = popularity / 100.0,
                genre = data[,1],
                songBy = paste(track_name, "by", artist_name))
 
-genre_list <- as.vector(distinct(data, genre)[,1])
+
+genre_list <- as.vector(distinct(music_data, genre)[,1])
 
 radar_chart <- function(group_names, df, columns) {
   p <- plot_ly(type = 'scatterpolar', mode = 'marker', fill = 'toself')
@@ -29,7 +30,7 @@ get_genre_stats <- function(genres, input_df, columns) {
   for (i in seq(length(genres))) {
     for (j in seq(length(columns))) {
       col_sym <- rlang::sym(columns[j])
-      genre_df <- filter(data, genre == genres[i])
+      genre_df <- filter(music_data, genre == genres[i])
       summarized_col <- summarize(genre_df, mean(!!col_sym))
       df[i, j] <- summarized_col[1,1] * 100
     }
@@ -50,7 +51,7 @@ my_server <- function(input, output) {
   })
   
   output$radarchart_genres <- renderPlotly({
-    return (get_genre_stats(input$genres, data, input$attributes))
+    return (get_genre_stats(input$genres, music_data, input$attributes))
   })
   
   output$genre_selection <- renderUI({
@@ -103,6 +104,14 @@ my_server <- function(input, output) {
     return(NULL)
   }
   
+  output$radarchart <- renderPlotly({
+    return (get_genre_stats(input$genres, music_data, input$attributes))
+  })
+  
+  #output$outputPlot <- renderPlot({
+  #  filtered <- head(music_data, 1000)
+  #  ggplot(filtered, aes(x = get(input$XAxis), y = get(input$YAxis))) + geom_point() + labs(x = input$XAxis, y = input$YAxis, title = paste(input$XAxis, "vs", input$YAxis)) + geom_smooth()
+  #})
 }
 
 shinyServer(my_server)

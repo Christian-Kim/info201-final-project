@@ -48,8 +48,6 @@ my_ui <- navbarPage(
                plotOutput("outputPlot")
              )
            )
-           
-    
   )
 )
 

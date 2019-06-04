@@ -71,23 +71,13 @@ my_server <- function(input, output) {
       selected = "Pop"
     )
   })
-  
-  buttonstates <- reactiveValues(one=0, two=0)
 
   output$playlist <- renderTable({
-    req(input$update_playlist, input$clear_playlist)
-    if (input$update_playlist != buttonstates$one) {
-      buttonstates$one <- input$update_playlist
+      input$update_playlist
       playlist <- read.csv("./playlist.csv", stringsAsFactors = FALSE)
       playlist <- add_row(playlist, Songs = c(isolate(input$playlist_select)))
       write.csv(playlist, "./playlist.csv", row.names = FALSE)
       return (playlist)
-    } else if (input$clear_playlist != buttonstates$two) {
-      buttonstates$two <- input$clear_playlist
-      playlist <- data.frame(Songs = c(""))
-      write.csv(playlist, "./playlist.csv", row.names = FALSE)
-      return (playlist)
-    }
   })
   
   output$song_selection <- renderUI({
@@ -104,7 +94,7 @@ my_server <- function(input, output) {
       )
     )
   })
-  
+
   output$radarchart_playlist <- renderPlotly({
     playlist_df <- filter(music_data, songBy %in% input$playlist_select)
     columns <- input$attributes_playlist

@@ -6,7 +6,7 @@ library(plotly)
 files <- dir("./data")
 music_data <- do.call(rbind,lapply(paste0("./data/", files), read.csv, stringsAsFactors = FALSE))
 music_data <- mutate(music_data, popularity = popularity / 100.0,
-               genre = data[,1],
+               genre = music_data[,1],
                songBy = paste(track_name, "by", artist_name))
 
 
@@ -71,7 +71,7 @@ my_server <- function(input, output) {
   })
   
   output$song_selection <- renderUI({
-    songs <- as.vector(filter(data, genre == input$genre_selection) %>% select(songBy))
+    songs <- as.vector(filter(music_data, genre == input$genre_selection) %>% select(songBy))
     selectizeInput(
       'playlist_select',
       'Add to your playlist',
@@ -86,7 +86,7 @@ my_server <- function(input, output) {
   })
   
   output$radarchart_playlist <- renderPlotly({
-    playlist_df <- filter(data, songBy %in% input$playlist_select)
+    playlist_df <- filter(music_data, songBy %in% input$playlist_select)
     columns <- input$attributes_playlist
 
     summarized_df <- data.frame(matrix(ncol = length(columns), nrow = 1))

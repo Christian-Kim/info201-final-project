@@ -60,7 +60,22 @@ my_server <- function(input, output) {
   })
   
   output$radarchart_genres <- renderPlotly({
-    return (get_genre_stats(input$genres, music_data, input$attributes))
+    columns <- input$attributes
+    genres <- input$genres
+    df <- data.frame(matrix(ncol = length(columns), nrow = length(genres)))
+    colnames(df) <- columns
+    if (length(genres) == 0) {
+      return (radar_chart(c(), df, columns))
+    }
+    for (i in seq(length(genres))) {
+      for (j in seq(length(columns))) {
+        col_sym <- rlang::sym(columns[j])
+        genre_df <- filter(music_data, genre == genres[i])
+        summarized_col <- summarize(genre_df, mean(!!col_sym))
+        df[i, j] <- summarized_col[1,1] * 100
+      }
+    }
+    return (radar_chart(genres, df, columns))
   })
   
   output$genre_selection <- renderUI({
@@ -105,14 +120,27 @@ my_server <- function(input, output) {
       )
     )
   })
-
+  
   output$radarchart_playlist <- renderPlotly({
-    playlist_df <- filter(music_data, songBy %in% input$playlist_select)
+    playlist <- read.csv("./playlist.csv", stringsAsFactors = FALSE)
+    playlist_df <- filter(music_data, songBy %in% select(playlist, Songs))
+    View(playlist_df)
     columns <- input$attributes_playlist
-
     summarized_df <- data.frame(matrix(ncol = length(columns), nrow = 1))
     colnames(summarized_df) <- columns
-    
+    for (j in seq(length(columns))) {
+      col_sym <- rlang::sym(columns[j])
+      summarized_col <- summarize(playlist_df, mean(!!col_sym))
+      summarized_df[1, j] <- summarized_col[1,1] * 100
+    }
+    return (radar_chart(c("Your Playlist's Features:"), summarized_df, columns))
+  })
+
+  output$radarchart_selected_song <- renderPlotly({
+    playlist_df <- filter(music_data, songBy %in% input$playlist_select)
+    columns <- input$attributes_playlist
+    summarized_df <- data.frame(matrix(ncol = length(columns), nrow = 1))
+    colnames(summarized_df) <- columns
     for (j in seq(length(columns))) {
       col_sym <- rlang::sym(columns[j])
       summarized_col <- summarize(playlist_df, mean(!!col_sym))

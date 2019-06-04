@@ -25,6 +25,7 @@ my_ui <- navbarPage(
   tabPanel(
     "Playlist Stuff",
     sidebarPanel(
+      plotlyOutput("radarchart_playlist"),
       tableOutput("playlist"),
       actionButton(
         "clear_playlist",
@@ -41,7 +42,7 @@ my_ui <- navbarPage(
             attributes,
             selected = attributes
           )),
-          div(style="display: inline-block;vertical-align:top; width: 500px;", plotlyOutput("radarchart_playlist")),
+          div(style="display: inline-block;vertical-align:top; width: 500px;", plotlyOutput("radarchart_selected_song")),
           uiOutput("genre_selection"),
           uiOutput("song_selection"),
           actionButton(

@@ -47,7 +47,23 @@ my_ui <- navbarPage(
         )
       )
     )
-  )
+  ),
+  tabPanel(
+    "Data Comparison",
+    sidebarPanel(
+      uiOutput(
+        "genres_drop_down"),
+      selectInput(
+        "x",
+        "X-Axis",
+        attributes[-1]
+      )
+    ),
+    mainPanel(
+      plotOutput("outputPlot")
+    )
+  ),
+  tabPanel("About this Project")
 )
 
 shinyUI(my_ui)

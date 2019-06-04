@@ -9,7 +9,6 @@ music_data <- mutate(music_data, popularity = popularity / 100.0,
                genre = music_data[,1],
                songBy = paste(track_name, "by", artist_name))
 
-
 genre_list <- as.vector(distinct(music_data, genre)[,1])
 
 radar_chart <- function(group_names, df, columns) {
@@ -129,6 +128,16 @@ my_server <- function(input, output) {
     playlist_songs <- read_playlist()
     checkboxGroupInput("playlist_songs_checkbox", "Playlist Songs", playlist_songs)
     actionButton("updateButton", "Remove Songs")
+  })
+  
+  output$outputPlot <- renderPlot({
+    test1 <- filter(music_data, genre == toString(input$list_of_genres_plot))
+    plot <- ggplot(test1, aes(x = get(input$x), y = popularity)) + geom_smooth() + labs(x = input$x, y = "popularity", title = paste(input$x, "vs popularity for", input$list_of_genres_plot, "Music")) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+    return(plot)
+  })
+  
+  output$genres_drop_down <- renderUI({
+    selectInput("list_of_genres_plot", "Pick a Genre", genre_list)
   })
 }
 

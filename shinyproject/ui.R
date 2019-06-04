@@ -38,7 +38,7 @@ my_ui <- navbarPage(
                  plotlyOutput("radarchart_playlist"), 
                  uiOutput("genre_selection"),
                  uiOutput("song_selection"),
-                 dataTableOutput("playlist")), 
+                 tableOutput("playlist")), 
         tabPanel("Song Recommendation", 
                  tableOutput("song_recommendation_table")
         ),

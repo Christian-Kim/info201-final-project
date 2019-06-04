@@ -63,7 +63,7 @@ my_server <- function(input, output) {
     )
   })
   
-  output$playlist <- renderDataTable({
+  output$playlist <- renderTable({
     playlist <- read.csv("./playlist.csv", stringsAsFactors = FALSE)
     playlist <- add_row(playlist, Songs = c(input$playlist_select))
     write.csv(playlist, "./playlist.csv", row.names = FALSE)
@@ -86,8 +86,7 @@ my_server <- function(input, output) {
   })
   
   output$radarchart_playlist <- renderPlotly({
-    playlist <- read.csv("./playlist.csv", stringsAsFactors = FALSE)
-    playlist_df <- filter(music_data, songBy %in% playlist$Songs)
+    playlist_df <- filter(music_data, songBy %in% input$playlist_select)
     columns <- input$attributes_playlist
 
     summarized_df <- data.frame(matrix(ncol = length(columns), nrow = 1))

@@ -72,12 +72,23 @@ my_server <- function(input, output) {
     )
   })
 
-  output$playlist <- renderTable({
-      input$update_playlist
+  observeEvent(
+    input$update_playlist,
+    {output$playlist <- renderTable({
       playlist <- read.csv("./playlist.csv", stringsAsFactors = FALSE)
       playlist <- add_row(playlist, Songs = c(isolate(input$playlist_select)))
       write.csv(playlist, "./playlist.csv", row.names = FALSE)
       return (playlist)
+    })
+  })
+  
+  observeEvent(
+    input$clear_playlist,
+    {output$playlist <- renderTable({
+      playlist <- data.frame(Songs = c(""))
+      write.csv(playlist, "./playlist.csv", row.names = FALSE)
+      return (playlist)
+    })
   })
   
   output$song_selection <- renderUI({
@@ -107,7 +118,7 @@ my_server <- function(input, output) {
       summarized_col <- summarize(playlist_df, mean(!!col_sym))
       summarized_df[1, j] <- summarized_col[1,1] * 100
     }
-    return (radar_chart(c("Your Playlist Features:"), summarized_df, columns))
+    return (radar_chart(c("Selected Song's Features:"), summarized_df, columns))
   })
   
   output$radarchart <- renderPlotly({
@@ -116,27 +127,6 @@ my_server <- function(input, output) {
   
   output$song_recommendation_table <- renderTable({
     return(NULL)
-  })
-  
-  output$placeholder <- renderText({
-    input$updateButton
-    remove_songs <- input$playlist_songs_checkbox 
-    playlist <- read.csv("./playlist.csv", stringsAsFactors = FALSE)
-    for(remove in remove_songs) {
-      playlist <- filter(playlist, Songs != remove)
-    }
-    return("")
-  })
-  
-  read_playlist <- reactive({
-    playlist <- read.csv("./playlist.csv", stringsAsFactors = FALSE)
-    return(as.vector(select(playlist, Songs)))
-  })
-  
-  output$delete_songs <- renderUI({
-    playlist_songs <- read_playlist()
-    checkboxGroupInput("playlist_songs_checkbox", "Playlist Songs", playlist_songs)
-    actionButton("updateButton", "Remove Songs")
   })
   
   output$outputPlot <- renderPlot({

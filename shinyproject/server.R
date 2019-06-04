@@ -9,7 +9,6 @@ music_data <- mutate(music_data, popularity = popularity / 100.0,
                genre = music_data[,1],
                songBy = paste(track_name, "by", artist_name))
 
-
 genre_list <- as.vector(distinct(music_data, genre)[,1])
 
 radar_chart <- function(group_names, df, columns) {
@@ -38,7 +37,8 @@ get_genre_stats <- function(genres, input_df, columns) {
   return (radar_chart(genres, df, columns))
 }
 
-playlist <- c()
+playlist <- data.frame(Songs = c(""))
+write.csv(playlist, "./playlist.csv", row.names = FALSE)
 
 my_server <- function(input, output) {
   output$genre_list <- renderUI({
@@ -62,12 +62,16 @@ my_server <- function(input, output) {
     )
   })
   
+  append_to_playlist <- reactive({
+    playlist <- read.csv("./playlist.csv", stringsAsFactors = FALSE)
+    playlist <- add_row(playlist, Songs = c(input$playlist_select))
+    write.csv(playlist, "./playlist.csv", row.names = FALSE)
+  })
+  
   output$playlist <- renderDataTable({
-    print(input$playlist_select)
-    playlist <- c(playlist, input$playlist_select)
-    df <- data.frame(playlist)
-    colnames(df) <- c("Songs")
-    return (df)
+    append_to_playlist()
+    playlist <- read.csv("./playlist.csv", stringsAsFactors = FALSE)
+    return (playlist)
   })
   
   output$song_selection <- renderUI({
@@ -76,17 +80,17 @@ my_server <- function(input, output) {
       'playlist_select',
       'Add to your playlist',
       choices = songs,
-      multiple = FALSE,
-      options = list(
-        'plugins' = list('remove_button'),
-        'create' = TRUE,
-        'persist' = FALSE
-      )
+      multiple = FALSE
+      #options = list(
+      #  'plugins' = list('remove_button'),
+      #  'create' = TRUE,
+      #  'persist' = FALSE
+      #)
     )
   })
   
   output$radarchart_playlist <- renderPlotly({
-    playlist_df <- filter(music_data, songBy %in% input$playlist_select)
+    playlist_df <- filter(music_data, songBy %in% playlist$Songs)
     columns <- input$attributes_playlist
 
     summarized_df <- data.frame(matrix(ncol = length(columns), nrow = 1))

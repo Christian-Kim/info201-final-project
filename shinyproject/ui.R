@@ -2,6 +2,8 @@ library(shiny)
 library(shinythemes)
 library(plotly)
 
+attributes <- c("popularity",  "instrumentalness", "acousticness", "danceability", "energy", "liveness", "speechiness", "valence")
+
 my_ui <- navbarPage(
   theme = shinytheme("flatly"),
   "Music Analyzer",
@@ -11,7 +13,7 @@ my_ui <- navbarPage(
       checkboxGroupInput(
         "attributes",
         "Select Attributes",
-        c("popularity",  "instrumentalness", "acousticness", "danceability", "energy", "liveness", "speechiness", "valence"),
+        attributes,
         selected = c("popularity", "energy", "valence")
       )
     ),
@@ -19,9 +21,22 @@ my_ui <- navbarPage(
       plotlyOutput("radarchart")
     )
   ), 
-  tabPanel("Tab #2 name place holder"
+  tabPanel("Playlist Generator"
     #sidebarPanel(),
     ##mainPanel()
+  ),
+  tabPanel("What makes a song popular?",
+           sidebarLayout(
+             sidebarPanel(
+               selectInput("XAxis", "X-Axis", attributes), 
+               selectInput("YAxis", "Y-Axis", attributes)
+             ), 
+             mainPanel(
+               plotOutput("outputPlot")
+             )
+           )
+           
+    
   )
 )
 

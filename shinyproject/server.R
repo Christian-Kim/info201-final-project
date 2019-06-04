@@ -45,6 +45,10 @@ my_server <- function(input, output) {
   output$radarchart <- renderPlotly({
     return (get_genre_stats(input$genres, data, input$attributes))
   })
+  
+  output$outputPlot <- function(input, output) {
+    return(NULL)
+  }
 }
 
 shinyServer(my_server)

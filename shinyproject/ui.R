@@ -15,7 +15,7 @@ my_ui <- navbarPage(
         "attributes",
         "Select Attributes",
         attributes,
-        selected = c("popularity", "energy", "valence")
+        selected = attributes
       ))
     ),
     mainPanel(
@@ -39,7 +39,7 @@ my_ui <- navbarPage(
             "attributes_playlist",
             "Select Attributes",
             attributes,
-            selected = c("popularity", "energy", "valence")
+            selected = attributes
           )),
           div(style="display: inline-block;vertical-align:top; width: 500px;", plotlyOutput("radarchart_playlist")),
           uiOutput("genre_selection"),

@@ -241,9 +241,36 @@ This layout grants an efficient way to view many different attributes of many di
     return("Here the user can choose a genre and an attribute to plot. Once the genre and attributes have been selected, the plot will filter and select the corresponding tracks from the data and will plot the data according to the popularity. This can be used to analyze what attributes of specific genres result in a popular/successful track.
 ")
   })
-  output$song_recommendation_text_output <- renderText({
-    return("The design team 40 Plus 1 would like to introduce our newest app, Music Analyzer. Running as a potential extension of Spotify, Music Analyzer uses data from kaggle user tomigelo's Spotify Audio Features which contains audio features from 130 thousand collected from the official Spotify Web API. Music Analyzer takes the information from the database and can display differences, similarities, trends, and even recommendations between whole genres and specific tracks. Team 40 Plus 1 is a team formed through the INFO 201 course at the University of Washington.
-")
+  output$about_this_project <- renderText({
+    return(HTML("The design team 40 Plus 1 would like to introduce our newest app, Music Analyzer. Running as a potential extension of Spotify, Music Analyzer uses data from kaggle user tomigelo's Spotify Audio Features which contains audio features from 130 thousand collected from the official Spotify Web API. Music Analyzer takes the information from the database and can display differences, similarities, trends, and even recommendations between whole genres and specific tracks. <br/><br/>Team 40 Plus 1:
+<br/>Team 40 Plus 1 is a team formed through the INFO 201 course at the University of Washington. <br/><br/>Team Members:  <br/>Ryan Qiu<br/>Christian Kim <br/>John Lee <br/><br/> artist_name: Shows the name of the artist excluding featured artists 
+<br/><br/> track_name: Shows the name of the track, includes featured artists
+
+<br/><br/> acousticness: Is a confidence measure from 0.0 to 1.0 of whether the track is acoustic (not having electrical amplification).
+
+<br/><br/>danceability: Is a confidence measure from 0.0 to 1.0 that describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability/consistency, and beat strength.
+
+<br/><br/>duration_ms: Is the length of the track by milliseconds.
+
+<br/><br/>energy: Is a measure from 0.0 to 1.0 and represents a perceptual measure of intensity and activity. Typically, energetic tracks feel fast, loud, and noisy.
+
+<br/><br/>instrumentalness: The closer the instrumentalness value is to 1.0, the greater likelihood the track contains no vocal content. Values above 0.5 are intended to represent instrumental tracks, but confidence is higher as the value approaches 1.0.
+
+<br/><br/>key: Is the estimated overall key of the track. 
+
+<br/><br/>liveness: Is the level of detection of an audience in the track (higher liveness indicates a higher likelihood of the track having been played live.  
+
+<br/><br/>loudness: Is the overall loudness of the track in decibels (dB)
+
+<br/><br/>mode: Mode indicates the modality (major or minor) of a track, the type of scale from which its melodic content is derived. Major is represented by 1 and minor is 0.
+
+<br/><br/>speechiness: Speechiness detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value. Values above 0.66 describe tracks that are probably made entirely of spoken words. Values between 0.33 and 0.66 describe tracks that may contain both music and speech, either in sections or layered, including such cases as rap music. Values below 0.33 most likely represent music and other non-speech-like tracks.
+
+<br/><br/>tempo: The overall estimated tempo of a track in beats per minute (BPM). Tempo is the speed or pace of a given piece and derives directly from the average beat duration.
+
+<br/><br/>time_signature: An estimated overall time signature of a track.
+
+<br/><br/>valence: A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive, while tracks with low valence sound more negative."))
   })
 }
 

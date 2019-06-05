@@ -77,7 +77,6 @@ my_ui <- navbarPage(
         # This depends on the songs from the previous tab. 
         tabPanel(
           "Song Recommendation",
-          textOutput("song_recommendation_text_output"),
           actionButton(
             "update_recs",
             "Press to see songs similar to the ones in your playlist"
@@ -108,7 +107,9 @@ my_ui <- navbarPage(
   # 4th tab about this project tab. Displays text about this project. 
   tabPanel(
     "About this Project",
-    mainPanel("Welcome")
+    mainPanel(
+      htmlOutput("about_this_project")
+    )
   )
 )
 

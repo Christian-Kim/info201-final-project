@@ -70,8 +70,7 @@ my_ui <- navbarPage(
           actionButton(
             "update_playlist",
             "Add this song to your playlist"
-          ),
-          textOutput("header_playlist_creation")
+          )
         ),
         # Song recommendation subtab. When the action button is pressed the song recommendation is updated 
         # This depends on the songs from the previous tab. 
@@ -91,6 +90,7 @@ my_ui <- navbarPage(
   # also a plot to show the trend 
   tabPanel(
     "Popularity Trends",
+    textOutput("header_popularity_graph"),
     sidebarPanel(
       uiOutput(
         "genres_drop_down"),

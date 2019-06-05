@@ -4,6 +4,8 @@ library(shiny)
 library(plotly)
 library(DT)
 
+
+## Lines of code in order to manipulate our data into a useable format
 files <- dir("./data")
 music_data <- do.call(rbind,lapply(paste0("./data/", files), read.csv, stringsAsFactors = FALSE))
 music_data <- mutate(music_data, popularity = popularity / 100.0,
@@ -12,8 +14,12 @@ music_data <- mutate(music_data, popularity = popularity / 100.0,
 
 distinct_songs <- distinct(music_data, track_name, .keep_all = TRUE)
 
+## list of the genres 
 genre_list <- as.vector(distinct(music_data, genre)[,1])
 
+## Creates a radar chart where each element in group name displays as a trace,
+## df contains one row per trace, columns define which attributes are shown, and
+## W, H, and M define the display sizes of the chart.
 radar_chart <- function(group_names, df, columns, W, H, M) {
   if (length(group_names) == 0 || length(columns) == 0 || nrow(df) == 0) {
     return (plot_ly(type = 'scatterpolar', mode = 'marker', fill = 'toself') %>%
@@ -49,26 +55,11 @@ radar_chart <- function(group_names, df, columns, W, H, M) {
   return (p)
 }
 
-get_genre_stats <- function(genres, input_df, columns) {
-  df <- data.frame(matrix(ncol = length(columns), nrow = length(genres)))
-  colnames(df) <- columns
-  if (length(genres) == 0) {
-    return (radar_chart(c(), df, columns))
-  }
-  for (i in seq(length(genres))) {
-    for (j in seq(length(columns))) {
-      col_sym <- rlang::sym(columns[j])
-      genre_df <- filter(music_data, genre == genres[i])
-      summarized_col <- summarize(genre_df, mean(!!col_sym))
-      df[i, j] <- summarized_col[1,1] * 100
-    }
-  }
-  return (radar_chart(genres, df, columns))
-}
-
+## this is to initialize an empty playlist for the start of the app 
 playlist <- music_data %>% head(1) %>% filter(artist_name == "")
 write.csv(playlist, "./playlist.csv", row.names = FALSE)
 
+## initiates the server 
 my_server <- function(input, output) {
   output$genre_list <- renderUI({
     checkboxGroupInput(
@@ -79,6 +70,8 @@ my_server <- function(input, output) {
     )
   })
   
+  ## renders the radar chart for the attributes and genres in the first tab which is based on the selected attributes and 
+  ## genres
   output$radarchart_genres <- renderPlotly({
     columns <- input$attributes
     genres <- input$genres
@@ -99,6 +92,7 @@ my_server <- function(input, output) {
     return (radar_chart(genres, df, columns, W = 1000, H = 600, M = radar_margins))
   })
   
+  ## renders the select dropdown menu in the 2nd tab, playlist creation subtab, which displays the genre to pick. 
   output$genre_selection <- renderUI({
     selectizeInput(
       "genre_selection",
@@ -108,6 +102,8 @@ my_server <- function(input, output) {
     )
   })
 
+  ## renders the table in the 2nd tab that displays the playlist created. Only updates when the action button
+  ## update_playlist is pressed.
   observeEvent(
     input$update_playlist,
     {output$playlist <- renderTable({
@@ -122,6 +118,7 @@ my_server <- function(input, output) {
     })
   })
   
+  ## clears the playlist and updates the table showing the playlist when the clear playlist button is pressed to an empty table. 
   observeEvent(
     input$clear_playlist,
     {output$playlist <- renderTable({
@@ -133,6 +130,8 @@ my_server <- function(input, output) {
     })
   })
   
+  ## Renders the select input in the playlist creation subtab for the songs to put into the playlist
+  ## only shows songs that are within the selected genre in the other dropdown menu.
   output$song_selection <- renderUI({
     songs <- as.vector(filter(music_data, genre == input$genre_selection) %>% select(songBy))
     selectizeInput(
@@ -148,6 +147,8 @@ my_server <- function(input, output) {
     )
   })
   
+  ## Anytime the add button songto playlist button is pressed of the clear playlist button is pressed, 
+  ## This renders a new radar plot showing the average attributes of the given playlist. 
   observeEvent(
     c(input$update_playlist, input$clear_playlist),
     {output$radarchart_playlist <- renderPlotly({
@@ -166,7 +167,8 @@ my_server <- function(input, output) {
     })
   })
   
-
+  ## Whenever a new song is picked in the dropdown menu containing the songs, a new radar plot is displayed 
+  ## in the 2nd tab, playlist creation screen showing the attributes of the selected song. 
   output$radarchart_selected_song <- renderPlotly({
     playlist_df <- filter(music_data, songBy %in% input$playlist_select)
     columns <- input$attributes_playlist
@@ -182,10 +184,8 @@ my_server <- function(input, output) {
     return (radar_chart(c("Selected Song's Features:"), summarized_df, columns, W = 600, H = 600, M = radar_margin))
   })
   
-  output$radarchart <- renderPlotly({
-    return (get_genre_stats(input$genres, music_data, input$attributes))
-  })
-  
+  ## renders the plot for the for the 3rd tab depending on the input of the drop down menu in the sidebar 
+  ## Of the selected genre and selected attribute in the dropdown menus in the sidebar. 
   output$outputPlot <- renderPlot({
     test1 <- filter(music_data, genre == toString(input$list_of_genres_plot))
     plot <- ggplot(test1, aes(x = get(input$x), y = popularity)) +
@@ -195,10 +195,12 @@ my_server <- function(input, output) {
     return(plot)
   })
   
+  ## Renders the drop down menu of all the genres in our dataset in the sidebar 
   output$genres_drop_down <- renderUI({
     selectInput("list_of_genres_plot", "Pick a Genre", genre_list)
   })
   
+  ## Renders the table in the song recommendation tab based on the playlist created. 
   observeEvent(
     input$update_recs,
     {output$song_recommendation_table <- DT::renderDataTable({
@@ -228,19 +230,27 @@ my_server <- function(input, output) {
       DT::datatable(distinct_songs_percent_diff, options = list(searching = FALSE))
     })
   })
+  
+  ## Renders the text in the tab Feature Analysis by Genre. 
   output$header1 <- renderText({
     return("Here the user is presented with checkboxes to select genres and attributes. Once specific genres and attributes have been selected the data is taken and formatted into a radar chart which will display the levels of each attribute and categorize each genre by color.
-This layout grants an efficient way to view many different attributes of many different genres. It allows a user to analyze the overall attributes of genres relative to other genres.  
-")
+  This layout grants an efficient way to view many different attributes of many different genres. It allows a user to analyze the overall attributes of genres relative to other genres.  
+  ")
   })
+  
+  ## renders the text in the Create a Playlist tab. 
   output$header2 <- renderText({
     return("Here the user can select between two different subtabs. The first subtab Playlist Creation allows the user search for specific tracks within a specific genre. Once a user has selected a track the Music Analyzer present that individual track's radar chart containing the levels for attributes that can be selected to the left of the radar chart. If the user likes the track they can push the Add this song to your playlist button to add the song into your playlist. All the songs in the user's playlist are displayed in a sidebar panel with a radar chart displaying the average attribute data from all the songs in the playlist. Once the user is satisfied with their playlist they can then go to the Song Recommendation subtab and press the Press to see songs similar to the ones in your playlist button to see the tracks from the data with the most similar attribute levels. These features can be used to assist the user by introducing tracks that they are likely to enjoy.   
-")
+  ")
   })
-  output$header_playlist_creation <- renderText({
+  
+  ## renders the text in the popularity graph tab. 
+  output$header_popularity_graph <- renderText({
     return("Here the user can choose a genre and an attribute to plot. Once the genre and attributes have been selected, the plot will filter and select the corresponding tracks from the data and will plot the data according to the popularity. This can be used to analyze what attributes of specific genres result in a popular/successful track.
-")
+  ")
   })
+  
+  ## renders the text in the about this project tab
   output$about_this_project <- renderText({
     return(HTML("The design team 40 Plus 1 would like to introduce our newest app, Music Analyzer. Running as a potential extension of Spotify, Music Analyzer uses data from kaggle user tomigelo's Spotify Audio Features which contains audio features from 130 thousand collected from the official Spotify Web API. Music Analyzer takes the information from the database and can display differences, similarities, trends, and even recommendations between whole genres and specific tracks. <br/><br/>Team 40 Plus 1:
 <br/>Team 40 Plus 1 is a team formed through the INFO 201 course at the University of Washington. <br/><br/>Team Members:  <br/>Ryan Qiu<br/>Christian Kim <br/>John Lee <br/><br/> artist_name: Shows the name of the artist excluding featured artists 

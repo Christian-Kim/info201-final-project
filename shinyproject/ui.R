@@ -40,7 +40,7 @@ my_ui <- navbarPage(
     # Renders header text for this tab
     textOutput("header2"),
     # sidebar Panel layout for the 2nd tab, has the radar chart for the playlist as a whole and the 
-    # action button for the clear playlist
+    # action button to clear the playlist. Also a table to show what songs are currently in the playlist. 
     sidebarPanel(
       plotlyOutput("radarchart_playlist"),
       tableOutput("playlist"),
@@ -50,10 +50,12 @@ my_ui <- navbarPage(
       )
     ),
     
-    # main panel for the 2nd playlist
+    # main panel for the 2nd tab. Has subtabs inside of it which are for playlist creation and song recommendations
     mainPanel(
       tabsetPanel(type = "tabs",
-        # Describe this tab...
+        # Playlist creation subtab. Has a radar chart showing the attributes of each individual song. 
+        # and a drop down to choose the tab to filter songs. Also a select tab which allows for adding of songs to playlist
+        # Only adds songs when the action button is pressed. 
         tabPanel(
           "Playlist Creation",
           div(style="display: inline-block;vertical-align:top; width: 300px;", checkboxGroupInput(
@@ -71,7 +73,8 @@ my_ui <- navbarPage(
           ),
           textOutput("header_playlist_creation")
         ),
-        # Describe this tab...
+        # Song recommendation subtab. When the action button is pressed the song recommendation is updated 
+        # This depends on the songs from the previous tab. 
         tabPanel(
           "Song Recommendation",
           textOutput("song_recommendation_text_output"),
@@ -84,7 +87,9 @@ my_ui <- navbarPage(
       )
     )
   ),
-  # Describe this tab...
+  # 3rd Tab called popularity trends. Drop down menu to pick which genre to examine.
+  # another dropdown menu to choose to x axis to see how each individual effects popularity. 
+  # also a plot to show the trend 
   tabPanel(
     "Popularity Trends",
     sidebarPanel(
@@ -100,7 +105,7 @@ my_ui <- navbarPage(
       plotOutput("outputPlot")
     )
   ),
-  # Describe this tab...
+  # 4th tab about this project tab. Displays text about this project. 
   tabPanel(
     "About this Project",
     mainPanel("Welcome")

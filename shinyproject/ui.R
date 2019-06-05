@@ -6,11 +6,17 @@ library(DT)
 attributes <- c("popularity",  "instrumentalness", "acousticness", "danceability", "energy", "liveness", "speechiness", "valence")
 playlist <- read.csv("./playlist.csv", stringsAsFactors = FALSE)
 
+
 my_ui <- navbarPage(
   theme = shinytheme("flatly"),
   "Music Analyzer",
-  # Describe this tab...
+  # This is the first tab, called Feature Analysis by Genre
   tabPanel("Feature Analysis by Genre",
+           
+    # this is the header text output for the first tab
+    textOutput("header1"), 
+    
+    # side bar panel for Feature Analysis by Genre tab
     sidebarPanel(
       div(style="display: inline-block;vertical-align:top; width: 150px;", uiOutput("genre_list")), 
       div(style="display: inline-block;vertical-align:top; width: 150px;", checkboxGroupInput(
@@ -20,13 +26,21 @@ my_ui <- navbarPage(
         selected = attributes
       ))
     ),
+    
+    #Main panel for the Feature Analysis by Genre tab
     mainPanel(
       plotlyOutput("radarchart_genres")
     )
   ), 
-  # Describe this tab...
+  
+  # 2nd Tab, named Create a playlist tab
   tabPanel(
     "Create a Playlist",
+    
+    # Renders header text for this tab
+    textOutput("header2"),
+    # sidebar Panel layout for the 2nd tab, has the radar chart for the playlist as a whole and the 
+    # action button for the clear playlist
     sidebarPanel(
       plotlyOutput("radarchart_playlist"),
       tableOutput("playlist"),
@@ -35,6 +49,8 @@ my_ui <- navbarPage(
         "Clear your current playlist"
       )
     ),
+    
+    # main panel for the 2nd playlist
     mainPanel(
       tabsetPanel(type = "tabs",
         # Describe this tab...
@@ -52,11 +68,13 @@ my_ui <- navbarPage(
           actionButton(
             "update_playlist",
             "Add this song to your playlist"
-          )
+          ),
+          textOutput("header_playlist_creation")
         ),
         # Describe this tab...
         tabPanel(
           "Song Recommendation",
+          textOutput("song_recommendation_text_output"),
           actionButton(
             "update_recs",
             "Press to see songs similar to the ones in your playlist"

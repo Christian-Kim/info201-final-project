@@ -9,6 +9,7 @@ playlist <- read.csv("./playlist.csv", stringsAsFactors = FALSE)
 my_ui <- navbarPage(
   theme = shinytheme("flatly"),
   "Music Analyzer",
+  # Describe this tab...
   tabPanel("Genre Page Thingy. Name Placeholder",
     sidebarPanel(
       div(style="display: inline-block;vertical-align:top; width: 150px;", uiOutput("genre_list")), 
@@ -23,6 +24,7 @@ my_ui <- navbarPage(
       plotlyOutput("radarchart_genres")
     )
   ), 
+  # Describe this tab...
   tabPanel(
     "Playlist Stuff",
     sidebarPanel(
@@ -35,6 +37,7 @@ my_ui <- navbarPage(
     ),
     mainPanel(
       tabsetPanel(type = "tabs",
+        # Describe this tab...
         tabPanel(
           "Playlist Creation",
           div(style="display: inline-block;vertical-align:top; width: 300px;", checkboxGroupInput(
@@ -50,7 +53,8 @@ my_ui <- navbarPage(
             "update_playlist",
             "Add this song to your playlist"
           )
-        ), 
+        ),
+        # Describe this tab...
         tabPanel(
           "Song Recommendation", 
           DT::dataTableOutput("song_recommendation_table")
@@ -58,6 +62,7 @@ my_ui <- navbarPage(
       )
     )
   ),
+  # Describe this tab...
   tabPanel(
     "Data Comparison",
     sidebarPanel(
@@ -73,7 +78,11 @@ my_ui <- navbarPage(
       plotOutput("outputPlot")
     )
   ),
-  tabPanel("About this Project")
+  # Describe this tab...
+  tabPanel(
+    "About this Project",
+    mainPanel("Welcome")
+  )
 )
 
 shinyUI(my_ui)

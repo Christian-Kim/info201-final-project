@@ -10,7 +10,7 @@ my_ui <- navbarPage(
   theme = shinytheme("flatly"),
   "Music Analyzer",
   # Describe this tab...
-  tabPanel("Genre Page Thingy. Name Placeholder",
+  tabPanel("Feature Analysis by Genre",
     sidebarPanel(
       div(style="display: inline-block;vertical-align:top; width: 150px;", uiOutput("genre_list")), 
       div(style="display: inline-block;vertical-align:top; width: 150px;", checkboxGroupInput(
@@ -26,7 +26,7 @@ my_ui <- navbarPage(
   ), 
   # Describe this tab...
   tabPanel(
-    "Playlist Stuff",
+    "Create a Playlist",
     sidebarPanel(
       plotlyOutput("radarchart_playlist"),
       tableOutput("playlist"),
@@ -56,7 +56,11 @@ my_ui <- navbarPage(
         ),
         # Describe this tab...
         tabPanel(
-          "Song Recommendation", 
+          "Song Recommendation",
+          actionButton(
+            "update_recs",
+            "Press to see songs similar to the ones in your playlist"
+          ),
           DT::dataTableOutput("song_recommendation_table")
         )
       )
@@ -64,7 +68,7 @@ my_ui <- navbarPage(
   ),
   # Describe this tab...
   tabPanel(
-    "Data Comparison",
+    "Popularity Trends",
     sidebarPanel(
       uiOutput(
         "genres_drop_down"),

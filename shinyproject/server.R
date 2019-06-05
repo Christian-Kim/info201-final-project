@@ -229,16 +229,21 @@ my_server <- function(input, output) {
     })
   })
   output$header1 <- renderText({
-    return("")
+    return("Here the user is presented with checkboxes to select genres and attributes. Once specific genres and attributes have been selected the data is taken and formatted into a radar chart which will display the levels of each attribute and categorize each genre by color.
+This layout grants an efficient way to view many different attributes of many different genres. It allows a user to analyze the overall attributes of genres relative to other genres.  
+")
   })
   output$header2 <- renderText({
-    return("")
+    return("Here the user can select between two different subtabs. The first subtab Playlist Creation allows the user search for specific tracks within a specific genre. Once a user has selected a track the Music Analyzer present that individual track's radar chart containing the levels for attributes that can be selected to the left of the radar chart. If the user likes the track they can push the Add this song to your playlist button to add the song into your playlist. All the songs in the user's playlist are displayed in a sidebar panel with a radar chart displaying the average attribute data from all the songs in the playlist. Once the user is satisfied with their playlist they can then go to the Song Recommendation subtab and press the Press to see songs similar to the ones in your playlist button to see the tracks from the data with the most similar attribute levels. These features can be used to assist the user by introducing tracks that they are likely to enjoy.   
+")
   })
   output$header_playlist_creation <- renderText({
-    return("")
+    return("Here the user can choose a genre and an attribute to plot. Once the genre and attributes have been selected, the plot will filter and select the corresponding tracks from the data and will plot the data according to the popularity. This can be used to analyze what attributes of specific genres result in a popular/successful track.
+")
   })
   output$song_recommendation_text_output <- renderText({
-    return("")
+    return("The design team 40 Plus 1 would like to introduce our newest app, Music Analyzer. Running as a potential extension of Spotify, Music Analyzer uses data from kaggle user tomigelo's Spotify Audio Features which contains audio features from 130 thousand collected from the official Spotify Web API. Music Analyzer takes the information from the database and can display differences, similarities, trends, and even recommendations between whole genres and specific tracks. Team 40 Plus 1 is a team formed through the INFO 201 course at the University of Washington.
+")
   })
 }
 

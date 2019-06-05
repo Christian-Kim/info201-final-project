@@ -228,6 +228,18 @@ my_server <- function(input, output) {
       DT::datatable(distinct_songs_percent_diff, options = list(searching = FALSE))
     })
   })
+  output$header1 <- renderText({
+    return("")
+  })
+  output$header2 <- renderText({
+    return("")
+  })
+  output$header_playlist_creation <- renderText({
+    return("")
+  })
+  output$song_recommendation_text_output <- renderText({
+    return("")
+  })
 }
 
 shinyServer(my_server)

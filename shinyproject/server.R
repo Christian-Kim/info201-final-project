@@ -2,12 +2,14 @@ library(dplyr)
 library(ggplot2)
 library(shiny)
 library(plotly)
+library(DT)
 
 files <- dir("./data")
 music_data <- do.call(rbind,lapply(paste0("./data/", files), read.csv, stringsAsFactors = FALSE))
 music_data <- mutate(music_data, popularity = popularity / 100.0,
                genre = music_data[,1],
                songBy = paste(track_name, "by", artist_name))
+
 distinct_songs <- distinct(music_data, track_name, .keep_all = TRUE)
 
 genre_list <- as.vector(distinct(music_data, genre)[,1])
@@ -186,7 +188,7 @@ my_server <- function(input, output) {
     selectInput("list_of_genres_plot", "Pick a Genre", genre_list)
   })
   
-  output$song_recommendation_table <- renderTable({
+  output$song_recommendation_table <- DT::renderDataTable({
     playlist_recommendation <- read.csv("./playlist.csv", stringsAsFactors = FALSE)
     playlist_songBy <- select(playlist_recommendation, songBy)
     playlist_averages <- filter(distinct_songs, songBy %in% playlist_songBy$songBy) %>%
@@ -198,15 +200,16 @@ my_server <- function(input, output) {
                 liveness = mean(liveness), 
                 speechiness = mean(speechiness), 
                 valence = mean(valence))
-    distinct_songs_percent_diff <- distinct_songs %>% mutate(percent_diff = (abs(instrumentalness - playlist_averages$instrumentalness) / instrumentalness) +
-                                                               (abs(acousticness - playlist_averages$acousticness) / playlist_averages$acousticness) + 
-                                                               (abs(danceability - playlist_averages$daceability) / playlist_averages$danceability) +
-                                                               (abs(energy - playlist_averages$energy) / energy) +
-                                                               (abs(liveness - playlist_averages$liveness) / playlist_averages$liveness) +
-                                                               (abs(speechiness - playlist_averages$speechiness) / playlist_averages$speechiness) +
-                                                               (abs(valence - playlist_averages$valence) / playlist_averages$valence)) %>% 
-                                                      arrange()
-    return(distinct_songs_percent_diff)
+    
+    distinct_songs_percent_diff <- distinct_songs %>% mutate(percent_diff =
+                                                               (abs(acousticness - playlist_averages[1,2]) / acousticness) + 
+                                                               (abs(danceability - playlist_averages[1,3]) / danceability) +
+                                                               (abs(energy - playlist_averages[1,4]) / energy) +
+                                                               (abs(liveness - playlist_averages[1,5]) / liveness) +
+                                                               (abs(speechiness - playlist_averages[1,6]) / speechiness) +
+                                                               (abs(valence - playlist_averages[1,7]) / valence)) %>% 
+                                                      arrange(percent_diff) %>% filter(percent_diff != 0) %>% select(songBy)
+    DT::datatable(distinct_songs_percent_diff, options = list(searching = FALSE))
   })
 }
 

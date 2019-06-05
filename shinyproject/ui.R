@@ -1,6 +1,7 @@
 library(shiny)
 library(shinythemes)
 library(plotly)
+library(DT)
 
 attributes <- c("popularity",  "instrumentalness", "acousticness", "danceability", "energy", "liveness", "speechiness", "valence")
 playlist <- read.csv("./playlist.csv", stringsAsFactors = FALSE)
@@ -52,7 +53,7 @@ my_ui <- navbarPage(
         ), 
         tabPanel(
           "Song Recommendation", 
-          tableOutput("song_recommendation_table")
+          DT::dataTableOutput("song_recommendation_table")
         )
       )
     )

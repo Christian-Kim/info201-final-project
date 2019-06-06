@@ -233,54 +233,78 @@ my_server <- function(input, output) {
   
   ## Renders the text in the tab Feature Analysis by Genre. 
   output$header1 <- renderText({
-    return("Here the user is presented with checkboxes to select genres and attributes. Once specific genres and attributes have been selected the data is taken and formatted into a radar chart which will display the levels of each attribute and categorize each genre by color.
-  This layout grants an efficient way to view many different attributes of many different genres. It allows a user to analyze the overall attributes of genres relative to other genres.  
-  ")
+    return(HTML("<font size=\"+1\"> Here the user is presented with checkboxes to select genres and attributes. 
+Once specific genres and attributes have been selected the data is taken and formatted into a radar chart 
+which will display the levels of each attribute and categorize each genre by color. 
+This layout grants an efficient way to view many different attributes of many different genres. 
+It allows a user to analyze the overall attributes of genres relative to other genres. Each feature's weight has been
+scaled by a factor of 100 to make the data readable if it was originally scaled from 0 to 1. </font> <br/><br/><br/>"))
   })
   
   ## renders the text in the Create a Playlist tab. 
   output$header2 <- renderText({
-    return("Here the user can select between two different subtabs. The first subtab Playlist Creation allows the user search for specific tracks within a specific genre. Once a user has selected a track the Music Analyzer present that individual track's radar chart containing the levels for attributes that can be selected to the left of the radar chart. If the user likes the track they can push the Add this song to your playlist button to add the song into your playlist. All the songs in the user's playlist are displayed in a sidebar panel with a radar chart displaying the average attribute data from all the songs in the playlist. Once the user is satisfied with their playlist they can then go to the Song Recommendation subtab and press the Press to see songs similar to the ones in your playlist button to see the tracks from the data with the most similar attribute levels. These features can be used to assist the user by introducing tracks that they are likely to enjoy.   
-  ")
+    return(HTML("<font size=\"+1\"> Here the user can select between two different subtabs. The first subtab Playlist Creation allows the user search for 
+specific tracks within a specific genre. Once a user has selected a track the Music Analyzer present that individual track's radar chart 
+containing the levels for attributes that can be selected to the left of the radar chart. If the user likes the track they can push the 
+Add this song to your playlist button to add the song into your playlist. 
+All the songs in the user's playlist are displayed in a sidebar panel with a radar chart displaying 
+the average attribute data from all the songs in the playlist. Once the user is satisfied with their playlist 
+they can then go to the Song Recommendation subtab and press the Press to see songs similar to the ones in your playlist button 
+to see the tracks from the data with the most similar attribute levels. 
+These features can be used to assist the user by introducing tracks that they are likely to enjoy. </font> <br/><br/>"))
   })
   
   ## renders the text in the popularity graph tab. 
   output$header_popularity_graph <- renderText({
-    return("Here the user can choose a genre and an attribute to plot. Once the genre and attributes have been selected, the plot will filter and select the corresponding tracks from the data and will plot the data according to the popularity. This can be used to analyze what attributes of specific genres result in a popular/successful track.
-  ")
+    return(HTML("<font size=\"+1\"> Here the user can choose a genre and an attribute to plot.
+Once the genre and attributes have been selected, the plot will filter and select the corresponding tracks from the data
+and will plot the data according to the popularity. This can be used to analyze what attributes of specific genres
+result in a popular/successful track. </font>"))
   })
   
   ## renders the text in the about this project tab
   output$about_this_project <- renderText({
-    return(HTML("The design team 40 Plus 1 would like to introduce our newest app, Music Analyzer. Running as a potential extension of Spotify, Music Analyzer uses data from kaggle user tomigelo's Spotify Audio Features which contains audio features from 130 thousand collected from the official Spotify Web API. Music Analyzer takes the information from the database and can display differences, similarities, trends, and even recommendations between whole genres and specific tracks. <br/><br/>Team 40 Plus 1:
-<br/>Team 40 Plus 1 is a team formed through the INFO 201 course at the University of Washington. <br/><br/>Team Members:  <br/>Ryan Qiu<br/>Christian Kim <br/>John Lee <br/><br/> artist_name: Shows the name of the artist excluding featured artists 
-<br/><br/> track_name: Shows the name of the track, includes featured artists
+    return(HTML("<font size=\"+2\"> The design team 40 Plus 1 would like to introduce our newest app, Music Analyzer.
+<br/> Running as a potential extension of Spotify, Music Analyzer uses data from kaggle user tomigelo's Spotify Audio Features
+which contains audio features from 130 thousand unique songs collected from the official Spotify Web API.
+<br/> Music Analyzer takes the information from the database and can display differences, similarities, trends, and even recommendations
+between whole genres and specific tracks.
+<br/>
+<br/> The motivation behind this application is to both analyze how specific features in songs affect them, and also provide individual users
+with insights into their own musical tastes.
+<br/>
+<br/> Team 40 Plus 1 is a team formed through the INFO 201 course at the University of Washington.
+<br/>
+<br/> Team Members:
+<br/> Ryan Qiu
+<br/> Christian Kim
+<br/> John Lee
+</font>"))
+  })
+  
+  ## renders the text in the What are the features? tab
+  output$feature_descriptions <- renderText({
+    return(HTML("<br/><br/> <font size=\"+1\"> <strong> artist_name: </strong> <br/> Shows the name of the artist excluding featured artists 
+                
+<br/><br/> <strong> track_name: </strong> <br/> Shows the name of the track, includes featured artists
 
-<br/><br/> acousticness: Is a confidence measure from 0.0 to 1.0 of whether the track is acoustic (not having electrical amplification).
+<br/><br/> <strong> acousticness: </strong> <br/> Is a confidence measure from 0.0 to 1.0 of whether the track is acoustic (not having electrical amplification).
 
-<br/><br/>danceability: Is a confidence measure from 0.0 to 1.0 that describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability/consistency, and beat strength.
+<br/><br/> <strong> danceability: </strong> <br/> Is a confidence measure from 0.0 to 1.0 that describes how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability/consistency, and beat strength.
 
-<br/><br/>duration_ms: Is the length of the track by milliseconds.
+<br/><br/> <strong> energy: </strong> <br/> Is a measure from 0.0 to 1.0 and represents a perceptual measure of intensity and activity. Typically, energetic tracks feel fast, loud, and noisy.
 
-<br/><br/>energy: Is a measure from 0.0 to 1.0 and represents a perceptual measure of intensity and activity. Typically, energetic tracks feel fast, loud, and noisy.
+<br/><br/> <strong> instrumentalness: </strong> <br/> The closer the instrumentalness value is to 1.0, the greater likelihood the track contains no vocal content. Values above 0.5 are intended to represent instrumental tracks, but confidence is higher as the value approaches 1.0.
 
-<br/><br/>instrumentalness: The closer the instrumentalness value is to 1.0, the greater likelihood the track contains no vocal content. Values above 0.5 are intended to represent instrumental tracks, but confidence is higher as the value approaches 1.0.
+<br/><br/> <strong> liveness: </strong> <br/> Is the level of detection of an audience in the track (higher liveness indicates a higher likelihood of the track having been played live.  
 
-<br/><br/>key: Is the estimated overall key of the track. 
+<br/><br/> <strong> speechiness: </strong> <br/> Speechiness detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value. Values above 0.66 describe tracks that are probably made entirely of spoken words. Values between 0.33 and 0.66 describe tracks that may contain both music and speech, either in sections or layered, including such cases as rap music. Values below 0.33 most likely represent music and other non-speech-like tracks.
 
-<br/><br/>liveness: Is the level of detection of an audience in the track (higher liveness indicates a higher likelihood of the track having been played live.  
+<br/><br/> <strong> valence: </strong> <br/> A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive, while tracks with low valence sound more negative.
 
-<br/><br/>loudness: Is the overall loudness of the track in decibels (dB)
-
-<br/><br/>mode: Mode indicates the modality (major or minor) of a track, the type of scale from which its melodic content is derived. Major is represented by 1 and minor is 0.
-
-<br/><br/>speechiness: Speechiness detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value. Values above 0.66 describe tracks that are probably made entirely of spoken words. Values between 0.33 and 0.66 describe tracks that may contain both music and speech, either in sections or layered, including such cases as rap music. Values below 0.33 most likely represent music and other non-speech-like tracks.
-
-<br/><br/>tempo: The overall estimated tempo of a track in beats per minute (BPM). Tempo is the speed or pace of a given piece and derives directly from the average beat duration.
-
-<br/><br/>time_signature: An estimated overall time signature of a track.
-
-<br/><br/>valence: A measure from 0.0 to 1.0 describing the musical positiveness conveyed by a track. Tracks with high valence sound more positive, while tracks with low valence sound more negative."))
+<br/><br/> <strong> popularity: </strong> <br/> The popularity of a track is a value between 0 and 100, with 100 being the most popular. The popularity is calculated by algorithm and is based, in the most part, on the total number of plays the track has had and how recent those plays are.
+            
+<br/><br/> Source: <a href=\"https://developer.spotify.com/documentation/web-api/reference/tracks/get-audio-features/\">Spotify API</a> </font>"))
   })
 }
 

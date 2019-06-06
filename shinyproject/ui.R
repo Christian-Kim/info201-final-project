@@ -12,10 +12,6 @@ my_ui <- navbarPage(
   "Music Analyzer",
   # This is the first tab, called Feature Analysis by Genre
   tabPanel("Feature Analysis by Genre",
-           
-    # this is the header text output for the first tab
-    textOutput("header1"), 
-    
     # side bar panel for Feature Analysis by Genre tab
     sidebarPanel(
       div(style="display: inline-block;vertical-align:top; width: 150px;", uiOutput("genre_list")), 
@@ -29,6 +25,8 @@ my_ui <- navbarPage(
     
     #Main panel for the Feature Analysis by Genre tab
     mainPanel(
+      # this is the header text output for the first tab
+      htmlOutput("header1"),
       plotlyOutput("radarchart_genres")
     )
   ), 
@@ -38,7 +36,7 @@ my_ui <- navbarPage(
     "Create a Playlist",
     
     # Renders header text for this tab
-    textOutput("header2"),
+    htmlOutput("header2"),
     # sidebar Panel layout for the 2nd tab, has the radar chart for the playlist as a whole and the 
     # action button to clear the playlist. Also a table to show what songs are currently in the playlist. 
     sidebarPanel(
@@ -90,7 +88,6 @@ my_ui <- navbarPage(
   # also a plot to show the trend 
   tabPanel(
     "Popularity Trends",
-    textOutput("header_popularity_graph"),
     sidebarPanel(
       uiOutput(
         "genres_drop_down"),
@@ -101,7 +98,8 @@ my_ui <- navbarPage(
       )
     ),
     mainPanel(
-      plotOutput("outputPlot")
+      plotOutput("outputPlot"),
+      htmlOutput("header_popularity_graph")
     )
   ),
   # 4th tab about this project tab. Displays text about this project. 
@@ -109,6 +107,13 @@ my_ui <- navbarPage(
     "About this Project",
     mainPanel(
       htmlOutput("about_this_project")
+    )
+  ),
+  # 5th tab explaining feature definitions
+  tabPanel(
+    "What do the Features Mean?",
+    mainPanel(
+      htmlOutput("feature_descriptions")
     )
   )
 )
